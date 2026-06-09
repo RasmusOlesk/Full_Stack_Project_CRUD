@@ -1,0 +1,21 @@
+# Visual Studio / IDE
+.vs/
+.vscode/
+
+# ASP.NET Core / .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log
