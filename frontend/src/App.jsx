@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  createTask,
-  deleteTask,
-  getTasks,
-  updateTask,
-} from "./services/taskService";
+import { createTask, deleteTask, getTasks, updateTask } from "./services/taskService";
 import "./App.css";
 
 const emptyForm = {
@@ -15,44 +10,45 @@ const emptyForm = {
   dueDate: "",
 };
 
-function App() {
+export default function App() {
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  // -----------------------------
+  // Andmete laadimine
+  // -----------------------------
   useEffect(() => {
     loadTasks();
   }, []);
 
-  async function loadTasks() {
+  const loadTasks = async () => {
     try {
-      const data = await getTasks();
-      setTasks(data);
+      setTasks(await getTasks());
     } catch {
       setError("Ülesannete laadimine ebaõnnestus");
     }
-  }
+  };
 
-  function handleChange(event) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
-  }
+  // -----------------------------
+  // Event handlerid
+  // -----------------------------
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError("");
     setMessage("");
 
-    try {
-      const taskData = {
-        ...form,
-        dueDate: new Date(form.dueDate).toISOString(),
-      };
+    const taskData = {
+      ...form,
+      dueDate: new Date(form.dueDate).toISOString(),
+    };
 
+    try {
       if (editingId) {
         await updateTask(editingId, taskData);
         setMessage("Ülesanne muudeti edukalt");
@@ -63,13 +59,13 @@ function App() {
 
       setForm(emptyForm);
       setEditingId(null);
-      await loadTasks();
+      loadTasks();
     } catch {
       setError("Salvestamine ebaõnnestus");
     }
-  }
+  };
 
-  function startEdit(task) {
+  const startEdit = (task) => {
     setEditingId(task.id);
     setForm({
       title: task.title,
@@ -78,21 +74,24 @@ function App() {
       status: task.status,
       dueDate: task.dueDate.slice(0, 10),
     });
-  }
+  };
 
-  async function handleDelete(id) {
+  const handleDelete = async (id) => {
     setError("");
     setMessage("");
 
     try {
       await deleteTask(id);
       setMessage("Ülesanne kustutati");
-      await loadTasks();
+      loadTasks();
     } catch {
       setError("Kustutamine ebaõnnestus");
     }
-  }
+  };
 
+  // -----------------------------
+  // Render
+  // -----------------------------
   return (
     <main className="app">
       <h1>Task Manager</h1>
@@ -100,6 +99,7 @@ function App() {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
+      {/* Vorm */}
       <form onSubmit={handleSubmit} className="task-form">
         <input
           name="title"
@@ -141,6 +141,7 @@ function App() {
         </button>
       </form>
 
+      {/* Ülesannete nimekiri */}
       {tasks.length === 0 ? (
         <p className="empty-state">Ühtegi ülesannet ei ole veel lisatud.</p>
       ) : (
@@ -153,12 +154,10 @@ function App() {
               <p>Staatus: {task.status}</p>
               <p>Tähtaeg: {new Date(task.dueDate).toLocaleDateString()}</p>
 
-              <button type="button" onClick={() => startEdit(task)}>
-                Muuda
-              </button>
-              <button type="button" onClick={() => handleDelete(task.id)}>
-                Kustuta
-              </button>
+              <div className="task-actions">
+                <button onClick={() => startEdit(task)}>Muuda</button>
+                <button onClick={() => handleDelete(task.id)}>Kustuta</button>
+              </div>
             </article>
           ))}
         </section>
@@ -166,5 +165,3 @@ function App() {
     </main>
   );
 }
-
-export default App;
