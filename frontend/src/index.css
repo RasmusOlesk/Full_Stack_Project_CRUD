@@ -19,7 +19,6 @@
   box-sizing: border-box;
 }
 
-/* BODY — DOOM ambient pulse + chromatic glitch */
 body {
   min-width: 320px;
   min-height: 100vh;
@@ -76,7 +75,6 @@ body::after {
   100% { transform: translateX(0); opacity: 0.4; }
 }
 
-/* Form elements inherit DOOM HUD font */
 button,
 input,
 textarea,
@@ -85,7 +83,7 @@ select {
   color: var(--doom-text);
 }
 
-/* Buttons — metallic DOOM panel */
+/* Buttons  */
 button {
   border: 2px solid var(--doom-border);
   background: #1a1a1a;
