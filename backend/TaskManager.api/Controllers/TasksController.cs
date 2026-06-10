@@ -43,6 +43,10 @@ public class TasksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TaskItem>> CreateTask(CreateTaskDto dto)
     {
+        // ⭐ Added validation check
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var task = new TaskItem
         {
             Title = dto.Title,

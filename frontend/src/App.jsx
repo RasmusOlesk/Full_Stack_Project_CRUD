@@ -17,9 +17,6 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  // -----------------------------
-  // Andmete laadimine
-  // -----------------------------
   useEffect(() => {
     loadTasks();
   }, []);
@@ -32,9 +29,6 @@ export default function App() {
     }
   };
 
-  // -----------------------------
-  // Event handlerid
-  // -----------------------------
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -45,7 +39,10 @@ export default function App() {
 
     const taskData = {
       ...form,
-      dueDate: new Date(form.dueDate).toISOString(),
+      // ⭐ FIXED: safe date conversion
+      dueDate: form.dueDate
+        ? new Date(form.dueDate).toISOString()
+        : null,
     };
 
     try {
@@ -89,9 +86,6 @@ export default function App() {
     }
   };
 
-  // -----------------------------
-  // Render
-  // -----------------------------
   return (
     <main className="app">
       <h1>Task Manager</h1>
@@ -99,7 +93,6 @@ export default function App() {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      {/* Vorm */}
       <form onSubmit={handleSubmit} className="task-form">
         <input
           name="title"
@@ -141,7 +134,6 @@ export default function App() {
         </button>
       </form>
 
-      {/* Ülesannete nimekiri */}
       {tasks.length === 0 ? (
         <p className="empty-state">Ühtegi ülesannet ei ole veel lisatud.</p>
       ) : (

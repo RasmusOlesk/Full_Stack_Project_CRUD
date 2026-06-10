@@ -3,10 +3,7 @@ using TaskManager.api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -20,33 +17,26 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
-});
 
-
-builder.Services.AddCors(options =>
-{
     options.AddPolicy("Frontend", policy =>
     {
         policy.WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
+// IMPORTANT: Use the LOCAL policy during development
+app.UseCors("Frontend");
+
 app.UseHttpsRedirection();
-
-app.UseCors("AllowFrontend");
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

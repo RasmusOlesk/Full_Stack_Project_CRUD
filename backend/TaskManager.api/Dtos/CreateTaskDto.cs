@@ -19,6 +19,6 @@ public class CreateTaskDto
     [RegularExpression("Pending|InProgress|Done")]
     public string Status { get; set; } = "Pending";
 
-    [Required]
-    public DateTime DueDate { get; set; }
+    // ⭐ FIXED: no [Required], nullable type
+    public DateTime? DueDate { get; set; }
 }
